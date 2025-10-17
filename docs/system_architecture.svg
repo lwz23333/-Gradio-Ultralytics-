@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <defs>
+    <style>
+      .title{font:700 22px sans-serif; fill:#333}
+      .label{font:600 16px sans-serif; fill:#1f2d3d}
+      .text{font:14px sans-serif; fill:#34495e}
+      .box{fill:#ffffff; stroke:#95a5a6; stroke-width:2}
+      .layer{fill:#f6f8fa; stroke:#d1d5da; stroke-width:2}
+      .arrow{stroke:#7f8c8d; stroke-width:2; marker-end:url(#arrowhead)}
+    </style>
+    <marker id="arrowhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7f8c8d" />
+    </marker>
+  </defs>
+
+  <text x="600" y="36" text-anchor="middle" class="title">Gradio + Ultralytics YOLO 在线视频推理系统 - 三层架构</text>
+
+  <!-- Layers -->
+  <rect x="40" y="60" width="1120" height="120" rx="8" class="layer" />
+  <text x="60" y="86" class="label">输入层 (Input Layer)</text>
+
+  <rect x="40" y="200" width="1120" height="180" rx="8" class="layer" />
+  <text x="60" y="226" class="label">处理层 (Processing Layer)</text>
+
+  <rect x="40" y="400" width="1120" height="100" rx="8" class="layer" />
+  <text x="60" y="426" class="label">输出层 (Output Layer)</text>
+
+  <!-- Input Layer boxes -->
+  <rect x="80" y="96" width="240" height="64" rx="8" class="box"/>
+  <text x="200" y="120" text-anchor="middle" class="label">本地视频文件</text>
+  <text x="200" y="142" text-anchor="middle" class="text">MP4 / AVI / MOV / MKV</text>
+
+  <rect x="360" y="96" width="240" height="64" rx="8" class="box"/>
+  <text x="480" y="120" text-anchor="middle" class="label">摄像头</text>
+  <text x="480" y="142" text-anchor="middle" class="text">USB / IPCam</text>
+
+  <rect x="640" y="96" width="240" height="64" rx="8" class="box"/>
+  <text x="760" y="120" text-anchor="middle" class="label">网络流（URL）</text>
+  <text x="760" y="142" text-anchor="middle" class="text">RTSP / RTMP / HTTP</text>
+
+  <rect x="920" y="96" width="200" height="64" rx="8" class="box"/>
+  <text x="1020" y="120" text-anchor="middle" class="label">Gradio 界面</text>
+  <text x="1020" y="142" text-anchor="middle" class="text">上传/输入/控制参数</text>
+
+  <!-- Processing Layer boxes -->
+  <rect x="80" y="240" width="220" height="112" rx="8" class="box"/>
+  <text x="190" y="262" text-anchor="middle" class="label">采集与解码</text>
+  <text x="190" y="284" text-anchor="middle" class="text">OpenCV / 拉流与断线重连</text>
+  <text x="190" y="304" text-anchor="middle" class="text">BGR→RGB / 帧抽样(可选)</text>
+
+  <rect x="330" y="240" width="220" height="112" rx="8" class="box"/>
+  <text x="440" y="262" text-anchor="middle" class="label">预处理</text>
+  <text x="440" y="284" text-anchor="middle" class="text">resize imgsz=640/512</text>
+  <text x="440" y="304" text-anchor="middle" class="text">归一化 / 增强(可选)</text>
+
+  <rect x="580" y="240" width="220" height="112" rx="8" class="box"/>
+  <text x="690" y="262" text-anchor="middle" class="label">YOLOv11 推理</text>
+  <text x="690" y="284" text-anchor="middle" class="text">Ultralytics YOLO</text>
+  <text x="690" y="304" text-anchor="middle" class="text">device: auto/cpu/cuda</text>
+
+  <rect x="830" y="240" width="220" height="112" rx="8" class="box"/>
+  <text x="940" y="262" text-anchor="middle" class="label">后处理与可视化</text>
+  <text x="940" y="284" text-anchor="middle" class="text">NMS / 画框 / 统计</text>
+  <text x="940" y="304" text-anchor="middle" class="text">结果缩放 / 性能计数</text>
+
+  <!-- Output Layer boxes -->
+  <rect x="80" y="436" width="320" height="44" rx="8" class="box"/>
+  <text x="240" y="462" text-anchor="middle" class="label">Gradio 实时结果（Image/Video）</text>
+
+  <rect x="440" y="436" width="320" height="44" rx="8" class="box"/>
+  <text x="600" y="462" text-anchor="middle" class="label">本地保存（tmp/、runs/）</text>
+
+  <rect x="800" y="436" width="320" height="44" rx="8" class="box"/>
+  <text x="960" y="462" text-anchor="middle" class="label">日志/指标（状态文本/性能曲线）</text>
+
+  <!-- Arrows from Input to Processing -->
+  <line x1="200" y1="160" x2="190" y2="240" class="arrow" />
+  <line x1="480" y1="160" x2="440" y2="240" class="arrow" />
+  <line x1="760" y1="160" x2="690" y2="240" class="arrow" />
+  <line x1="1020" y1="160" x2="940" y2="240" class="arrow" />
+
+  <!-- Arrows inside Processing -->
+  <line x1="300" y1="296" x2="330" y2="296" class="arrow" />
+  <line x1="550" y1="296" x2="580" y2="296" class="arrow" />
+  <line x1="800" y1="296" x2="830" y2="296" class="arrow" />
+
+  <!-- Arrows to Output -->
+  <line x1="190" y1="352" x2="240" y2="436" class="arrow" />
+  <line x1="690" y1="352" x2="600" y2="436" class="arrow" />
+  <line x1="940" y1="352" x2="960" y2="436" class="arrow" />
+</svg>
