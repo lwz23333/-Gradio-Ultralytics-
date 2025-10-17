@@ -1,163 +1,118 @@
-![封面](mdimages/%E5%B0%81%E9%9D%A2.png)
+# Gradio + Ultralytics YOLO 实时/离线视频推理系统
 
-![插图1](mdimages/%E6%8F%92%E5%9B%BE1.png)
+一个基于 Gradio 的轻量 Web 界面，集成 Ultralytics YOLO（YOLOv8/YOLO11）进行本地文件、摄像头与网络流（RTSP/RTMP/HTTP 等）的目标检测推理。支持参数可视化配置、实时结果展示与可选的本地保存。
 
-**欢迎各位同学 or 大佬关注vx公众号"观智能"~ 作者会不定期更新技术文章~**
+> 如需快速体验：直接运行 `python run.py`，浏览器会自动打开 `http://127.0.0.1:9993`。
 
-![扫码_搜索联合传播样式-标准色版](mdimages/%E6%89%AB%E7%A0%81_%E6%90%9C%E7%B4%A2%E8%81%94%E5%90%88%E4%BC%A0%E6%92%AD%E6%A0%B7%E5%BC%8F-%E6%A0%87%E5%87%86%E8%89%B2%E7%89%88.png)
+---
 
-## 功能
+## 功能特性
+- 本地视频/摄像头/网络流的实时目标检测
+- 一键启动脚本，自动安装依赖并下载 YOLO 模型
+- 多模型选择：`yolo11n / yolo11s / yolo11m / yolo11l`（速度与精度可权衡）
+- 参数在线可视化配置：置信度、IoU 阈值、类别过滤、是否保存结果等
+- 结果可选本地保存到 `tmp/`，便于复盘与分享
+- 简洁的 UI 布局与可定制主题/样式（CSS/JS/HTML）
 
-- 本地及网络视频[RTSP|RTMP|IP|...]推理
-- 推理结果实时展示
-- 模型推理参数配置
-- 模型选择
-- 推理结果本地保存
-- 相关参数展示
+---
+
+## 环境要求
+- Python 3.8+
+- 可选：NVIDIA GPU + CUDA（用于大幅加速推理）
+
+> GPU/CPU 都可运行。若使用 GPU，请安装与你 CUDA 匹配的 `torch/torchvision` 版本。
+
+---
 
 ## 快速开始
 
-### 环境要求
-- Python 3.8+
-- 支持CUDA的GPU (可选，用于加速推理)
-
-### 安装和运行
-
-#### 方法1: 使用启动脚本 (推荐)
+### 方法一：一键启动（推荐）
 ```bash
 python run.py
 ```
-启动脚本会自动:
-- 检查Python版本
-- 安装所需依赖
-- 下载YOLO模型
-- 启动Web服务
+启动脚本将：
+- 检查 Python 版本
+- 自动安装 `requirements.txt` 依赖
+- 自动下载 `yolo11n.pt`（首次）
+- 启动 Web 服务（默认端口 `9993`）并自动打开浏览器
 
-#### 方法2: 手动安装
+运行成功后，访问：`http://127.0.0.1:9993`
+
+### 方法二：手动运行
 ```bash
 # 安装依赖
 pip install -r requirements.txt
 
-# 运行应用
+# 直接运行界面
 python interface.py
 ```
 
-### 访问应用
-运行成功后，在浏览器中访问: http://127.0.0.1:9993
+---
 
 ## 使用说明
+- 选择视频源：
+  - 本地文件（MP4/AVI/MOV 等）
+  - 摄像头（输入设备 ID，如 `0`）
+  - 网络流（RTSP/RTMP/HTTP URL）
+- 选择模型：
+  - `yolo11n` 最快，适合低资源/快速预览
+  - `yolo11s` 速度/精度平衡
+  - `yolo11m` 更高精度，速度中等
+  - `yolo11l` 最高精度，速度最慢
+- 调整参数：
+  - 置信度阈值、IoU 阈值、类别过滤、是否保存结果等
+- 可选保存：勾选后将推理结果帧/视频保存至 `tmp/`
 
-### 支持的视频源
-1. **本地视频文件**: 上传MP4、AVI、MOV等格式的视频文件
-2. **摄像头**: 使用本地摄像头进行实时推理 (输入设备ID，如0)
-3. **网络流**: 支持RTSP、RTMP、HTTP等网络视频流
+> 前端实时显示通过生成器 `stream=True` 实现逐帧输出；图像通道会从 OpenCV BGR 转为 RGB 以适配 Gradio。
 
-### 模型选择
-- yolo11n: 最快，精度较低
-- yolo11s: 平衡速度和精度
-- yolo11m: 中等速度，较高精度
-- yolo11l: 最慢，最高精度
+---
 
-### 参数调节
-- **置信度**: 检测结果的置信度阈值 (0-1)
-- **IoU阈值**: 非极大值抑制的IoU阈值 (0-1)
-- **目标类别**: 指定检测的类别ID (留空检测所有类别)
-- **保存结果**: 是否将推理结果视频保存到本地
+## 目录结构（节选）
+```
+.
+├── run.py                  # 一键启动脚本（安装依赖、下载模型、启动服务）
+├── interface.py            # Gradio 页面与交互逻辑
+├── action_function.py      # 推理/处理相关函数
+├── requirements.txt        # 依赖清单
+├── style.css / style.js    # 可选自定义样式与脚本
+├── tmp/                    # 运行时生成的临时/输出文件（可在 .gitignore 中忽略）
+├── mdimages/               # README/文档中的图片资源
+└── README.md               # 本文件
+```
 
-## 关键点
+---
 
-- **YOLO11的使用**
+## 依赖
+核心依赖如下，完整见 `requirements.txt`：
+```
+gradio>=4.40.0
+ultralytics>=8.3.0
+opencv-python>=4.6.0
+torch>=1.12.0
+torchvision>=0.13.0
+numpy>=1.23.0
+Pillow>=9.2.0
+```
 
-  调用Ultralytics的库，而不是开源代码
+> 需要 GPU 时请参考 PyTorch 官方文档选择与你 CUDA 匹配的版本。
 
-  ```python
-  model = YOLO("yolo11n")
-  ```
+---
 
-  注意，stream=True,即使用生成器(generator)，而不是一下子返回所有结果
+## 常见问题 FAQ
+- 推不动到 GitHub：仓库中含有超大文件（如 `.mp4`, `.pt`）会被拒绝，请在 `.gitignore` 忽略或改用 Git LFS，并清理历史后再推送。
+- 端口被占用：修改 `run.py` 中的 `server_port`，或直接运行 `python interface.py` 并通过参数配置端口。
+- 第一次加载模型慢：首次会自动下载权重；可预先将 `yolo11*.pt` 放在项目根目录。
+- 网络流无法打开：确认 URL、权限与网络连通性；必要时降低分辨率/码率。
 
-  ```python
-  results = model(....,stream=True)
-  ```
+---
 
-  每一帧的推理结果要将CV2的BGR通道顺序转为PIL的RGB，因为Gradio默认处理图片的通道顺序是RGB
+## 许可协议
+本项目遵循开源许可证（见 `LICENSE`）。Ultralytics YOLO 遵循其各自的上游许可与使用条款。
 
-  ```python
-  result = result[:, :, ::-1]
-  ```
+---
 
-- **页面如何布局？**
+## 致谢
+- [Ultralytics](https://ultralytics.com/) 提供易用的 YOLO 推理接口
+- [Gradio](https://www.gradio.app/) 让 ML Web UI 的搭建变得简单
 
-  **概括**：最外层为gr.Blocks，在gr.Blocks之内，嵌套容器组件或者放置功能性组件。容器组件通过**with**上下文管理器的格式书写。
-
-  如下图：
-
-  ![img](https://mmbiz.qpic.cn/sz_mmbiz_png/w0d0t6xrs0k4efaKcBo0GE0Kr7q1XuLCtGtqJVVepcHDhIaQGwSdP4jl52eejtSZuvB4nx4IC8vltWywKHYXLg/640?wx_fmt=png&from=appmsg)
-
-- **搞懂处理函数**
-
-  处理函数可以接收用户在页面交互时产生的数据，并且返回数据来更新组件的值。
-
-  如下例子所示，inference接收a,b,c,d四个前端组件传来的值，并将处理结果返回给m,n两个组件。
-
-  ```python
-  def inference(a,b,c,d):
-      ...
-      return m,n
-  ```
-
-  调用处理函数有两种方式，一是作为事件的实参直接传递，注意inputs和outputs组件的顺序和函数参数及返回值的顺序要一致：
-
-  ```python
-  button.click(fn=inference,inputs=[a,b,c,d],outputs=[m,n])
-  ```
-
-  二是在定义时被事件装饰器装饰：
-
-  ```Python
-  @button.click(inputs=[a,b,c,d],outputs=[m,n])
-  def inference(a,b,c,d):
-      ...
-      return m,n
-  ```
-
-- **如何更新组件属性？**
-
-  处理函数中讲过函数的返回值将用来更新对应组件的值，但当处理函数返回组件时，这个被返回的组件的属性将更新对应组件的属性：
-
-  ![image-20250111172118957](mdimages/image-20250111172118957.png)
-
-  比如在选择视频源时，点击视频文件按钮，就会跳出文件上传面板，而点击URL按钮就会隐藏文件上传面板并显示URL输入框。这是通过组件的visible属性做到的，如下图：
-
-  ![image-20250111172520722](mdimages/image-20250111172520722.png)
-
-  对应组件的其他属性不会受到影响。
-
-- **如何定制样式？**
-
-  ![image-20250111172746227](mdimages/image-20250111172746227.png)
-
-  可以使用Gradio的默认theme对象以及自定义theme对象；支持自定义css、js、HTML，以字符串或文件路径的形式传递给gr.Bolcks。在gr.Blocks中的组件可以使用其中的样式，如：
-
-  ```python
-  button = gr.Button(elem_id="xxx")
-  ```
-
-- **如何接收或输出流数据？**
-
-  比如目标检测的结果实时地展现在页面上，这意味着页面上的对应组件要不断地接收新的数据，做到这一点，只需要将普通的处理函数变成**生成器**，如下：
-
-  ```Python
-  def video_inference(i1,i2,...):
-      ...
-      yield o1,o2,o3,..
-  ```
-
-
-  本案例是将每张处理后的帧yield给一个gr.Image组件，组件上的画面不断更新，所以就形成了视频。
-
-  官方的解决方案是将n帧保存为一段短视频，然后将短视频yield给gr.Video组件，我觉得这样做有些鸡肋，没有采用。
-
-- **考虑到篇幅，更多细节问题就不再讨论啦~ 欢迎各位小伙伴@作者**
-
-http://211.86.197.10:9084/lab/tree/coursework/%E5%9F%BA%E4%BA%8EGradio%E5%92%8CUltralytics%E7%9A%84%E5%9C%A8%E7%BA%BF%E8%A7%86%E9%A2%91%E6%8E%A8%E7%90%86%E7%B3%BB%E7%BB%9F
+如果对你有帮助，欢迎 Star 支持！
