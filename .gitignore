@@ -1,0 +1,23 @@
+# OS/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+__pycache__/
+*.pyc
+
+# Large/temporary
+tmp/
+*.mp4
+*.avi
+*.mkv
+*.mov
+*.webm
+*.zip
+*.7z
+
+# Model weights
+*.pt
+*.onnx
+*.bin
+*.h5
+-Gradio-Ultralytics-/
